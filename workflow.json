@@ -1,0 +1,181 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "806882171994374174"
+        },
+        "channelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1511827553105739837"
+        },
+        "content": "=Nowy formularz:\nImię:  {{ $json['Jak masz na imię?'] }}\nTyp pojazdu: {{ $json['Wybierz posiadany typ pojazdu'] }}\nData zakupu: {{ $json['Podaj datę zakupu pojazdu'].toDateTime().format('dd-MM-yyyy') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        272,
+        -304
+      ],
+      "id": "268f7f3f-9b92-40af-8354-661fe61c732b",
+      "name": "Send a message",
+      "webhookId": "74f70cc5-192e-45be-b29a-df15e322e198",
+      "credentials": {
+        "discordBotApi": {
+          "id": "IaDmGfy6CBwGF8e2",
+          "name": "Discord Bot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "Test form",
+        "formDescription": "Ankieta komunikacyjna",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Jak masz na imię?"
+            },
+            {
+              "fieldLabel": "Podaj datę zakupu pojazdu",
+              "fieldType": "date"
+            },
+            {
+              "fieldLabel": "Wybierz posiadany typ pojazdu",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Samochód"
+                  },
+                  {
+                    "option": "Motocykl"
+                  },
+                  {
+                    "option": "Rower"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -176,
+        -208
+      ],
+      "id": "0348c783-6766-4b61-bf4d-b970643dea6f",
+      "name": "On form submission",
+      "webhookId": "4b750614-e999-4913-9696-9a95cf2e9423"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3d9c5131-f4c3-4cff-979b-e2286ae8f24c",
+              "leftValue": "={{ $json['Podaj datę zakupu pojazdu'].toDateTime() }}",
+              "rightValue": "={{ $now.minus(1, 'year') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        48,
+        -208
+      ],
+      "id": "6231ce7d-28bd-43f6-807e-52407763edc5",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "806882171994374174"
+        },
+        "channelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1511827553105739837"
+        },
+        "content": "=Pojazd nowszy niż 1 rok, pominięto",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        272,
+        -112
+      ],
+      "id": "63a1a727-c7b1-4d5d-94e5-ad5e45e56a27",
+      "name": "Send a message1",
+      "webhookId": "74f70cc5-192e-45be-b29a-df15e322e198",
+      "credentials": {
+        "discordBotApi": {
+          "id": "IaDmGfy6CBwGF8e2",
+          "name": "Discord Bot account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "72797b2f1dde907bf0a3358652aa4d3ab88efe1fd4fbff741831257889760bfc"
+  }
+}
